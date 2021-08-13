@@ -1,0 +1,90 @@
+# si pb de memoire windows
+wsl -d docker-desktop
+sysctl -w vm.max_map_count=262144
+
+# si pb de memoire ubuntu
+sudo sysctl -w vm.max_map_count=262144
+
+# si pb d'espace disque 
+# Aller dans vbx : https://www.malekal.com/virtualbox-reduire-augmenter-la-taille-du-disque-virtuel/
+ouvrir le media avec control d
+puis dans proprietes, augmenter la taille du disque de la VM
+Lancer la VM et installer gparted : : https://lecrabeinfo.net/redimensionner-agrandir-reduire-une-partition-sur-linux.html
+sudo apt install gparted
+gparted
+
+# Install docker-compose : voir https://phoenixnap.com/kb/install-docker-compose-ubuntu
+
+sudo apt-get update
+
+sudo curl -L "https://github.com/docker/compose/releases/download/1.24.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+
+sudo chmod +x /usr/local/bin/docker-compose
+
+docker-compose -version
+
+# Lancement ELK : voir https://www.elastic.co/guide/en/elastic-stack-get-started/current/get-started-docker.html
+docker-compose up
+
+# verif config
+docker exec -it es01 bash
+cat /usr/share/elasticsearch/config/elasticsearch.yml
+
+# Verifier
+http://localhost:9200 
+http://localhost:9200/_cluster/health?pretty=true
+
+curl -X GET "localhost:9200/_cat/nodes?v&pretty"
+ip         heap.percent ram.percent cpu load_1m load_5m load_15m node.role master name
+172.23.0.2           20          73  28    1.85    2.01     1.51 dim       -      elasticsearch2
+172.23.0.4           22          73  25    1.85    2.01     1.51 dim       *      elasticsearch1
+
+
+# Ouvrir Kibana
+http://localhost:5601
+
+# Arreter ELK
+docker-compose down -v
+
+==============
+voir https://www.elastic.co/guide/en/kibana/current/docker.html
+
+# demarrage d'elastic search
+docker network create elastic
+docker pull docker.elastic.co/elasticsearch/elasticsearch:7.13.4
+docker run --name es01-test --net elastic -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" docker.elastic.co/elasticsearch/elasticsearch:7.13.4
+
+# demarrage de kibana et connection a elastic search
+docker pull docker.elastic.co/kibana/kibana:7.13.4
+docker run --name kib01-test --net elastic -p 5601:5601 -e "ELASTICSEARCH_HOSTS=http://es01-test:9200" docker.elastic.co/kibana/kibana:7.13.4
+
+
+# install head : voir https://programmer.help/blogs/docker-runs-elastic-search-kibana-head-cluster.html
+docker pull mobz/elasticsearch-head:5
+docker run -d --name es_admin -p 9100:9100 mobz/elasticsearch-head:5
+
+# acces kibana navigateur
+http://localhost:5601
+
+# arret Elactic et Kibana
+docker stop es01-test
+docker stop kib01-test
+
+# supression container et network
+docker network rm elastic
+docker rm es01-test
+docker rm kib01-test
+
+==================== test# 
+# on recupere les requetes que l'on rentrer dans Kibana avec DEV Tools
+# voir https://www.elastic.co/guide/en/kibana/6.8/tutorial-load-dataset.html
+charger shakespeare.json, accounts.zip, logs.jsonl.gz
+
+# on utilise l'API REST Bulk d'Elastic pour remplir en masse le data set 
+curl -H 'Content-Type: application/x-ndjson' -XPOST 'localhost:9200/bank/account/_bulk?pretty' --data-binary @accounts.json
+curl -H 'Content-Type: application/x-ndjson' -XPOST 'localhost:9200/shakespeare/doc/_bulk?pretty' --data-binary @shakespeare_6.0.json
+curl -H 'Content-Type: application/x-ndjson' -XPOST 'localhost:9200/_bulk?pretty' --data-binary @logs.jsonl
+
+# Verif du chargement
+# voir https://www.elastic.co/guide/en/kibana/6.8/tutorial-load-dataset.html
+curl -X GET "localhost:9200/_cat/indices?v&pretty"
