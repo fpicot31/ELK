@@ -24,7 +24,7 @@ sudo chmod +x /usr/local/bin/docker-compose
 docker-compose -version
 
 # Lancement ELK : voir https://www.elastic.co/guide/en/elastic-stack-get-started/current/get-started-docker.html
-docker-compose up
+docker-compose up -d
 
 # verif config
 docker exec -it es01 bash
