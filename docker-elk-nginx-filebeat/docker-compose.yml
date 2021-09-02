@@ -79,7 +79,7 @@ services:
       - elk
 
   filebeat:
-   build:
+    build:
       context: filebeat/
       args:
         ELK_VERSION: $ELK_VERSION
