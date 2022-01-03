@@ -58,17 +58,54 @@ Default Kibana user information
 - Username: elastic
 - Password: changeme
 
+# Lancement ELK : 
+# voir https://www.elastic.co/guide/en/elastic-stack-get-started/current/get-started-docker.html
 
-# Tester elastic
+# Verifier les noeuds ELK :
+curl -X GET "localhost:9200/_cat/nodes?v&pretty"
+ou
 curl http://localhost:9200 -u elastic:changeme
 
-# Ouvrer dans votre navigateur nginx pour generer un log :
+# Ouvrer dans votre navigateur nginx pour generer un log nginx:
 localhost:80
 
-#Rappel :
+# Rappel :
 5044: Logstash Beats input
 5000: Logstash TCP input
 9600: Logstash monitoring API
 9200: Elasticsearch HTTP
 9300: Elasticsearch TCP transport
 5601: Kibana
+
+# arret
+docker-compose down -v
+
+
+# ===========================
+
+# si pb de memoire windows
+wsl -d docker-desktop
+sysctl -w vm.max_map_count=262144
+
+# si pb de memoire ubuntu
+sudo sysctl -w vm.max_map_count=262144
+
+
+# si pb d'espace disque VM
+# Aller dans vbx : https://www.malekal.com/virtualbox-reduire-augmenter-la-taille-du-disque-virtuel/
+ouvrir le media avec control d
+puis dans proprietes, augmenter la taille du disque de la VM
+Lancer la VM et installer gparted : : https://lecrabeinfo.net/redimensionner-agrandir-reduire-une-partition-sur-linux.html
+sudo apt install gparted
+gparted
+
+# Install docker-compose : voir https://phoenixnap.com/kb/install-docker-compose-ubuntu
+
+sudo apt-get update
+
+sudo curl -L "https://github.com/docker/compose/releases/download/1.24.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+
+sudo chmod +x /usr/local/bin/docker-compose
+
+docker-compose -version
+
