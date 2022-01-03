@@ -64,3 +64,11 @@ curl http://localhost:9200 -u elastic:changeme
 
 # Ouvrer dans votre navigateur nginx pour generer un log :
 localhost:80
+
+#Rappel :
+5044: Logstash Beats input
+5000: Logstash TCP input
+9600: Logstash monitoring API
+9200: Elasticsearch HTTP
+9300: Elasticsearch TCP transport
+5601: Kibana
