@@ -1,10 +1,8 @@
-# Elastic stack (ELK) + Filebeat for Monitoring Nginx on Docker
+# Elastic stack (ELK) + Filebeat : monitorer Nginx
 
-This is extended version from [ELK on Docker](https://github.com/deviantony/docker-elk) with Filebeat plugin. Filebeat takes in charge of streaming log file from nginx to Logstash then processing it and visualize to Kibana.
+[ELK on Docker](https://github.com/deviantony/docker-elk) with Filebeat plugin. Filebeat takes in charge of streaming log file from nginx to Logstash then processing it and visualize to Kibana.
 
-## What 's insides 
-
-```
+# Repertoires
 ├── app
 │   ├── package.json
 │   ├── package-lock.json
@@ -48,14 +46,21 @@ This is extended version from [ELK on Docker](https://github.com/deviantony/dock
 - Logstash: containing build image and configure pipeline for Logstash to process sent log file from Filebeat
 - Kibana: containing build image and configure for Kibana to visualize data
 
-## Getting Started
-
-To run this stack, run the following command
+# Lancer le cluster complet
 ```bash
-docker-compose up
+docker-compose up -d
 ```
+
+# Ouvrer votre navigateur pour acceder a kibana :
 Then go to `http://localhost:5601` to see your data in Kibana
 
 Default Kibana user information
 - Username: elastic
 - Password: changeme
+
+
+# Tester elastic
+curl http://localhost:9200 -u elastic:changeme
+
+# Ouvrer dans votre navigateur nginx pour generer un log :
+localhost:80
