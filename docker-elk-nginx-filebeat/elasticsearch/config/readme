@@ -1,0 +1,14 @@
+# Commençons par définir un index de recherche qui s’appelle scoring dans le moteur :
+curl -XPUT --header 'Content-Type: application/json' localhost:9200/scoring -d '{"settings" : { "index" : { "number_of_shards" : 1, "number_of_replicas" : 0 } } }'
+
+# Nous pouvons indexer notre premier document (la chaîne de caractères « first document ») :
+curl -XPOST --header 'Content-Type: application/json' localhost:9200/scoring/doc/1 -d '{ "name": "first document"}'
+
+# Une fois le document indexé dans l’annuaire inversé d’Elasticsearch, on peut rechercher dans notre index s’il existe un document contenant le terme « document ».
+curl -XGET --header 'Content-Type: application/json' localhost:9200/scoring/doc/1/_explain?pretty -d '{ "query": { "match" : {"name":"document"}}}'
+
+# Si on ajoute un nouveau document :
+$ curl -XPOST --header 'Content-Type: application/json' localhost:9200/scoring/doc/2 -d '{ "name": "second document"}'
+
+# refaire 
+curl -XPOST --header 'Content-Type: application/json' localhost:9200/scoring/doc/1 -d '{ "name": "first document"}'

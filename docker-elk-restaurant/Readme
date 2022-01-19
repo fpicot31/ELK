@@ -82,9 +82,20 @@ charger shakespeare.json, accounts.zip, logs.jsonl.gz
 
 # on utilise l'API REST Bulk d'Elastic pour remplir en masse le data set 
 curl -H 'Content-Type: application/x-ndjson' -XPOST 'localhost:9200/bank/account/_bulk?pretty' --data-binary @accounts.json
-curl -H 'Content-Type: application/x-ndjson' -XPOST 'localhost:9200/shakespeare/doc/_bulk?pretty' --data-binary @shakespeare_6.0.json
+curl -H 'Content-Type: application/x-ndjson' -XPOST 'localhost:9200/restaurant/resto/_bulk?pretty' --data-binary @restaurants.json
+#curl -H 'Content-Type: application/x-ndjson' -XPOST 'localhost:9200/shakespeare/doc/_bulk?pretty' --data-binary @shakespeare_6.0.json
 curl -H 'Content-Type: application/x-ndjson' -XPOST 'localhost:9200/_bulk?pretty' --data-binary @logs.jsonl
 
 # Verif du chargement
 # voir https://www.elastic.co/guide/en/kibana/6.8/tutorial-load-dataset.html
 curl -X GET "localhost:9200/_cat/indices?v&pretty"
+
+# retrouver le contenu d'un index bank par example
+curl -X GET "localhost:9200/bank/_search"
+
+# Voir les reaffectation des shards, puis supprimer un es2 avec docker stop container es02
+curl -X GET "localhost:9200/_cat/shards/bank"
+curl -X GET "localhost:9200/_cat/shards/restaurant"
+docker stop es02
+curl -X GET "localhost:9200/_cat/shards/bank"
+curl -X GET "localhost:9200/_cat/shards/restaurant"

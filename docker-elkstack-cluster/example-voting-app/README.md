@@ -1,3 +1,16 @@
+    faire un git push
+    cd docker-elkstack-cluster
+    docker-compose -f docker-compose-cluster.yml up -d
+    cd example-voting-app
+    docker-compose -f docker-compose-voting-app.yml up -d
+    puis dans le navigateur : ouvrir kibana
+    dans le navigateur localhost:5000 et cliquer sur CATS ou DOGS
+    Aller dans Kibana : creer l'index log*
+    puis visualiser en temps la reaction a chaque vote
+
+    docker stop  $(docker ps -aq)
+    docker rm  $(docker ps -aq)
+
 Example Voting App
 =========
 
